@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1683131882028002717}
   - component: {fileID: 1207884849873605583}
   - component: {fileID: 4947030566506560026}
-  - component: {fileID: 8354243598027083088}
+  - component: {fileID: 7980666739438651291}
   m_Layer: 0
   m_Name: Enemy_dash
   m_TagString: Untagged
@@ -143,7 +143,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &8354243598027083088
+--- !u!114 &7980666739438651291
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -152,13 +152,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 6971130954545375206}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71e73f6c57c03bb458e5e629be3ab675, type: 3}
+  m_Script: {fileID: 11500000, guid: 6a74547b5cc40c947b384a60443223bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_dash
   target: {fileID: 0}
-  targetOffset: {x: 0, y: -0.8}
+  targetOffset: {x: 0, y: -0.5}
   stopDistance: 0.5
   dashSpeed: 12
   dashDuration: 0.2
   dashPrepTime: 0.5
-  dashCooldown: 0.5
+  dashCooldown: 0.7

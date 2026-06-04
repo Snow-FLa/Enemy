@@ -16,6 +16,9 @@ public class Enemy_dash : MonoBehaviour
     public float dashPrepTime = 0.5f;
     public float dashCooldown = 1.5f;
 
+    [Header("Attack Settings")] // 💡 추가: 데미지 설정
+    public int dashDamage = 10;
+
     bool isLive = true;
     bool isDashing = false;
     bool canDash = true;
@@ -23,14 +26,14 @@ public class Enemy_dash : MonoBehaviour
     Rigidbody2D rigid;
     SpriteRenderer spriter;
     Animator anim;
-    Collider2D coll; // [추가] 죽었을 때 충돌 판정을 없애기 위한 변수
+    Collider2D coll;
 
     void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
         spriter = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
-        coll = GetComponent<Collider2D>(); // [추가] 컴포넌트 가져오기
+        coll = GetComponent<Collider2D>();
     }
 
     void Update()
@@ -99,24 +102,30 @@ public class Enemy_dash : MonoBehaviour
         canDash = true;
     }
 
-    // [추가] 몹이 죽을 때 호출할 함수
+    // 💡 추가: 대쉬 중 플레이어와 물리적으로 부딪혔을 때 호출
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        // 살아있고, '대쉬 중'일 때 부딪힌 대상이 'Player'라면
+        if (isLive && isDashing && collision.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("대쉬 적중! 플레이어에게 데미지: " + dashDamage);
+
+            // TODO: 플레이어 체력을 깎는 코드를 이곳에 작성합니다.
+            // 예시: collision.gameObject.GetComponent<PlayerHealth>().TakeDamage(dashDamage);
+        }
+    }
+
     public void Die()
     {
-        if (!isLive) return; // 이미 죽었다면 중복 실행 방지
+        if (!isLive) return;
 
         isLive = false;
-
-        // 대쉬 중이거나 대기 중인 모든 코루틴 강제 종료 (대쉬 도중 멈춤)
         StopAllCoroutines();
-
-        // 1. 애니메이터 Trigger 발동
         anim.SetTrigger("Dead");
 
-        // 2. 물리 및 충돌 비활성화
         if (coll != null) coll.enabled = false;
-        rigid.simulated = false; // 물리 연산을 완전히 꺼서 시체가 밀리지 않게 함
+        rigid.simulated = false;
 
-        // 3. 애니메이션 길이에 맞춰 오브젝트 삭제 (필요 시 시간 조절 또는 삭제 구문 제거)
         Destroy(gameObject, 1.0f);
     }
 

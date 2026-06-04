@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 307398550678365598}
   - component: {fileID: 5754129888777997925}
   - component: {fileID: 592325005809894264}
+  - component: {fileID: 1238275518383333498}
   - component: {fileID: 4834413468231272014}
   - component: {fileID: 3844717490146984319}
-  - component: {fileID: 2041309991419460909}
   m_Layer: 0
   m_Name: Enemy_golem
   m_TagString: Untagged
@@ -117,6 +117,23 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1238275518383333498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2589751731964965441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b42928b104004c84f9ec45724968a4f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy_far
+  moveSpeed: 2
+  attackRange: 5
+  projectilePrefab: {fileID: 0}
+  attackCooldown: 0.5
+  playerTransform: {fileID: 0}
 --- !u!50 &4834413468231272014
 Rigidbody2D:
   serializedVersion: 5
@@ -181,20 +198,3 @@ CapsuleCollider2D:
   m_Offset: {x: -0.01, y: 0}
   m_Size: {x: 0.27, y: 0.0001}
   m_Direction: 0
---- !u!114 &2041309991419460909
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2589751731964965441}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cece722c4bd3dd740a505d936b5824b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Enemy_far
-  moveSpeed: 2
-  attackRange: 5
-  projectilePrefab: {fileID: 0}
-  attackCooldown: 0.5
-  playerTransform: {fileID: 0}

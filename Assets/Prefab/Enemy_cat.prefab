@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7639862664276456494}
   - component: {fileID: 5636247266035233267}
   - component: {fileID: 7341644136719928359}
-  - component: {fileID: 2705362072978245971}
+  - component: {fileID: 2495476319710832838}
   m_Layer: 0
   m_Name: Enemy_cat
   m_TagString: Untagged
@@ -143,7 +143,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &2705362072978245971
+--- !u!114 &2495476319710832838
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -152,9 +152,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2153146018031765603}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0d3371be999534499eb09574bf9aac0, type: 3}
+  m_Script: {fileID: 11500000, guid: 85e40023164441942bed6f5c4811f27d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_cat
-  speed: 1
+  speed: 2
   stopDistance: 4
   target: {fileID: 0}

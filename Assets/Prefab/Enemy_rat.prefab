@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7853619338014884709}
   - component: {fileID: 7940897136151923015}
   - component: {fileID: 7455129069339891907}
-  - component: {fileID: 5742056304093385674}
+  - component: {fileID: 5247661462091341010}
   m_Layer: 0
   m_Name: Enemy_rat
   m_TagString: Untagged
@@ -181,7 +181,7 @@ CapsuleCollider2D:
   m_Offset: {x: 0.01, y: -0.1}
   m_Size: {x: 0.17, y: 0.0001}
   m_Direction: 0
---- !u!114 &5742056304093385674
+--- !u!114 &5247661462091341010
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -190,7 +190,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2128292753761834586}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd95e0c43b5d79c4ea5b949ae8b17b98, type: 3}
+  m_Script: {fileID: 11500000, guid: c0ceeed16b9e66d4a86d0fe536db213a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_
   speed: 2
