@@ -23,6 +23,15 @@ public class Enemy_cthulu : MonoBehaviour
     [Header("Common Attack Settings")]
     public float attackCooldown = 2.0f;
 
+    // 💡 추가됨: 그랩 이펙트 관련 설정
+    [Header("Effect Settings")]
+    [Tooltip("생성할 이펙트 프리팹 (파티클 등)")]
+    public GameObject grabEffectPrefab;
+    [Tooltip("이펙트가 생성될 기준 위치 (빈 오브젝트)")]
+    public Transform grabEffectPoint;
+    [Tooltip("애니메이션 시작 후 팔을 뻗기까지 걸리는 시간 (초)")]
+    public float effectDelay = 0.3f;
+
     bool isLive = true;
     bool isAttacking = false;
     bool canAttack = true;
@@ -50,7 +59,6 @@ public class Enemy_cthulu : MonoBehaviour
 
         if (canAttack)
         {
-            // [수정 1] 그랩 쿨타임이 돌았다면 평타를 완전 봉인하고 무조건 그랩만 노림
             if (canGrab)
             {
                 if (distance <= grabDistance && yDifference <= grabYThreshold)
@@ -58,7 +66,6 @@ public class Enemy_cthulu : MonoBehaviour
                     StartCoroutine(GrabAttackRoutine());
                 }
             }
-            // 그랩 쿨타임이 돌고 있을 때만 평타를 허용
             else
             {
                 if (distance <= attack1Distance)
@@ -78,21 +85,17 @@ public class Enemy_cthulu : MonoBehaviour
             float distance = Vector2.Distance(rigid.position, target.position);
             float yDifference = Mathf.Abs(target.position.y - rigid.position.y);
 
-            // 그랩이 가능할 때는 그랩 조건만 따짐 (평타 거리는 무시)
             bool canDoGrabNow = (canGrab && distance <= grabDistance && yDifference <= grabYThreshold);
-            // 평타는 그랩 쿨타임일 때만 따짐
             bool canDoMeleeNow = (!canGrab && distance <= attack1Distance);
 
             if (!canDoGrabNow && !canDoMeleeNow)
             {
-                // 다가가거나 Y축 각을 재기 위해 이동
                 Vector2 dirVec = (target.position - rigid.position).normalized;
                 Vector2 nextVec = dirVec * moveSpeed * Time.fixedDeltaTime;
                 rigid.MovePosition(rigid.position + nextVec);
             }
             else
             {
-                // 공격 사거리 및 조건에 충족하면 정지
                 rigid.linearVelocity = Vector2.zero;
             }
         }
@@ -115,13 +118,11 @@ public class Enemy_cthulu : MonoBehaviour
 
             if (canGrab)
             {
-                // 그랩 대기 중일 때는 그랩 사거리 & Y축이 맞으면 이동 애니메이션 정지
                 if (distance <= grabDistance && yDifference <= grabYThreshold)
                     isMoving = false;
             }
             else
             {
-                // 평타 대기 중일 때는 평타 사거리에 들어오면 이동 애니메이션 정지
                 if (distance <= attack1Distance)
                     isMoving = false;
             }
@@ -135,31 +136,22 @@ public class Enemy_cthulu : MonoBehaviour
         }
     }
 
-    // [수정 2] 일반 평타 공격 코루틴 (거리가 멀어지면 중간에 캔슬됨)
     IEnumerator MeleeAttackRoutine()
     {
         isAttacking = true;
         canAttack = false;
-
-        // attack1도 grab처럼 Bool 방식으로 켭니다
         anim.SetBool("attack1", true);
 
         float timer = 0f;
         while (timer < attack1Duration)
         {
             float currentDist = Vector2.Distance(rigid.position, target.position);
-
-            // 공격 도중에 플레이어가 도망가서 거리가 멀어지면 루프 탈출 (공격 강제 취소)
-            if (currentDist > attack1Distance)
-            {
-                break;
-            }
+            if (currentDist > attack1Distance) break;
 
             timer += Time.deltaTime;
-            yield return null; // 매 프레임마다 거리를 검사
+            yield return null;
         }
 
-        // 공격 시간이 다 끝났거나, 도중에 취소되었으면 Bool을 끄고 Idle로 돌아감
         anim.SetBool("attack1", false);
         isAttacking = false;
 
@@ -167,18 +159,41 @@ public class Enemy_cthulu : MonoBehaviour
         canAttack = true;
     }
 
-    // 그랩 공격 코루틴
+    // 💡 수정됨: 이펙트 생성 로직이 추가된 그랩 코루틴
     IEnumerator GrabAttackRoutine()
     {
         isAttacking = true;
         canAttack = false;
 
         anim.SetBool("grab", true);
-
         StartCoroutine(GrabCooldownRoutine());
 
-        // 그랩은 한 번 발동하면 끝까지 시전한다고 가정 (원한다면 위처럼 while문으로 바꿀 수 있음)
-        yield return new WaitForSeconds(grabDuration);
+        // 1. 애니메이션이 시작되고, 팔을 앞으로 뻗는 프레임까지 잠깐 대기합니다.
+        yield return new WaitForSeconds(effectDelay);
+
+        // 2. 이펙트 생성!
+        if (grabEffectPrefab != null && grabEffectPoint != null)
+        {
+            GameObject effect = Instantiate(grabEffectPrefab, grabEffectPoint.position, Quaternion.identity);
+
+            // 만약 몹이 왼쪽을 보고 있다면 이펙트도 좌우 반전 시켜줍니다 (스프라이트 기준)
+            if (spriter.flipX)
+            {
+                Vector3 scale = effect.transform.localScale;
+                scale.x *= -1;
+                effect.transform.localScale = scale;
+            }
+
+            // 0.5초 뒤에 이펙트 자동 삭제 (이펙트 길이에 맞게 조절하세요)
+            Destroy(effect, 0.5f);
+        }
+
+        // 3. 남은 그랩 시간 동안 대기 (전체 그랩 시간 - 이펙트 딜레이 시간)
+        float remainingTime = grabDuration - effectDelay;
+        if (remainingTime > 0)
+        {
+            yield return new WaitForSeconds(remainingTime);
+        }
 
         anim.SetBool("grab", false);
         isAttacking = false;
@@ -201,8 +216,8 @@ public class Enemy_cthulu : MonoBehaviour
         isLive = false;
         StopAllCoroutines();
 
-        anim.SetBool("attack1", false); // 죽을 때 평타 모션 강제 종료
-        anim.SetBool("grab", false);    // 죽을 때 그랩 모션 강제 종료
+        anim.SetBool("attack1", false);
+        anim.SetBool("grab", false);
         anim.SetTrigger("dead");
 
         if (coll != null) coll.enabled = false;
